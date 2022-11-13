@@ -114,13 +114,8 @@ export default {
         type: 'warning'
       }).then(() => {
         cate.isEnable = 1
-        updateCate(cate).then((res) => {
-          if (res.code === 200) {
-            this.$message({
-              message: '启用成功',
-              type: 'success'
-            })
-          }
+        updateCate(cate).then(res => {
+          this.$message.success('启用成功')
           cate.isEnable = 1
           this.cates[index] = cate
         })
@@ -133,13 +128,8 @@ export default {
         type: 'error'
       }).then(() => {
         cate.isEnable = 0
-        updateCate(cate).then((res) => {
-          if (res.code === 200) {
-            this.$message({
-              message: '禁用成功',
-              type: 'success'
-            })
-          }
+        updateCate(cate).then(res => {
+          this.$message.success('禁用成功')
           cate.isEnable = 0
           this.cates[index] = cate
         })
@@ -150,9 +140,7 @@ export default {
     },
     edited(res) {
       if (res.isAdd) {
-        this.cates.push(
-          res.cate
-        )
+        this.cates.push(res.cate)
       } else {
         const index = this.cates.findIndex(item => {
           return item.cateId === res.cate.cateId

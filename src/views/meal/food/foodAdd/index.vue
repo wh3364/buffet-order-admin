@@ -40,10 +40,20 @@
         <el-form-item label="多选配料">
           <el-row>
             <el-col v-for="(m, i) in food.foodDetail.dM.mS" :key="i" class="detail-d" :span="4">
-              <el-input
+              <el-autocomplete
                 v-model="m.n"
                 placeholder="输入配料名"
-              />
+                popper-class="el-autocomplete-suggestion"
+                :popper-append-to-body="false"
+                :fetch-suggestions="querySearchAsync"
+                @select="handleSelect"
+                @focus="changeDetailType(0, i)"
+              >
+                <template slot-scope="{ item }">
+                  <span>{{ item.value }}</span>
+                  <span>  {{ item.detailPrice }}￥</span>
+                </template>
+              </el-autocomplete>
               <el-form-item
                 :prop="'foodDetail.dM.mS.' + i + '.v'"
                 :rules="priceRules"
@@ -68,10 +78,20 @@
               class="detail-d"
             />
             <el-col v-for="(ri, j) in r.rS" :key="j" class="detail-d" :span="4">
-              <el-input
+              <el-autocomplete
                 v-model="ri.n"
                 placeholder="输入单选名"
-              />
+                popper-class="el-autocomplete-suggestion"
+                :popper-append-to-body="false"
+                :fetch-suggestions="querySearchAsync"
+                @focus="changeDetailType(1, i, j)"
+                @select="handleSelect"
+              >
+                <template slot-scope="{ item }">
+                  <span>{{ item.value }}</span>
+                  <span>  {{ item.detailPrice }}￥</span>
+                </template>
+              </el-autocomplete>
               <el-form-item
                 :prop="'foodDetail.dR.' + i + '.rS.' + j + '.v'"
                 :rules="priceRules"
@@ -81,7 +101,6 @@
                   suffix-icon="el-icon-s-finance"
                 />
               </el-form-item>
-
             </el-col>
             <div class="but-group">
               <el-button type="primary" class="detail-d" @click="addDetailDRRs(i)">添加</el-button>
@@ -117,6 +136,7 @@ import {
   validFoodPrice,
   validFoodDetailPrice
 } from '@/utils/validate'
+import { getAllDetails } from '@/api/mealFood'
 import { getAllCates } from '@/api/mealCate'
 import { addFood } from '@/api/mealFood'
 export default {
@@ -176,6 +196,10 @@ export default {
           rS: []
         }
       ],
+      details: [],
+      detailType: 0,
+      ii: -1,
+      jj: -1,
       foodRules: {
         foodName: [{ required: true, trigger: 'blur', validator: validateFoodName }],
         foodNote: [{ required: false, trigger: 'blur', validator: validateFoodNote }],
@@ -230,9 +254,31 @@ export default {
         this.food.foodCate = 1
         this.listLoading = false
       })
+      getAllDetails().then(res => {
+        this.details = res.data.map(item => {
+          return {
+            value: item.detailName,
+            detailPrice: item.detailPrice,
+            detailType: item.detailType
+          }
+        })
+      })
     },
     changeHaveDetail() {
       this.haveDetail ? this.food.haveDetail = 1 : this.food.haveDetail = 0
+    },
+    querySearchAsync(queryString, callback) {
+      const results = this.details.filter(item => { return item.detailType === this.detailType })
+      callback(results)
+    },
+    handleSelect(item) {
+      this.detailType ? this.food.foodDetail.dR[this.ii].rS[this.jj].v = item.detailPrice
+        : this.food.foodDetail.dM.mS[this.ii].v = item.detailPrice
+    },
+    changeDetailType(detailType, ii, jj) {
+      this.detailType = detailType
+      ii === undefined ? ii = -1 : this.ii = ii
+      jj === undefined ? jj = -1 : this.jj = jj
     },
     addDetailDM() {
       this.food.foodDetail.dM.mS.push({
@@ -276,20 +322,12 @@ export default {
           if (this.food.haveDetail === 1) {
             this.food.foodDetail = JSON.stringify(this.food.foodDetail)
           }
-          addFood(this.food).then((res) => {
-            if (res.code === 200) {
-              this.init()
-              this.$message({
-                message: '添加成功',
-                type: 'success'
-              })
-            }
+          addFood(this.food).then(res => {
+            this.init()
+            this.$message.success('添加成功')
           })
         } else {
-          this.$message({
-            message: '请检查表单',
-            type: 'error'
-          })
+          this.$message.error('请检查表单')
         }
       })
     }
@@ -303,5 +341,8 @@ export default {
 }
 .but-group {
   width: 70px;
+}
+::v-deep .el-autocomplete-suggestion {
+  width: auto!important;
 }
 </style>

@@ -51,6 +51,15 @@
       </el-table-column>
       <el-table-column
         align="center"
+        label="时间"
+        width="200"
+      >
+        <template slot-scope="scope">
+          {{ getFormatTime(scope.row.orderCreateTime) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
         prop="created_at"
         label="创建时间"
         width="200"
@@ -80,6 +89,7 @@ import { getOrderList, getOrder } from '@/api/orderList'
 import OrderCreateTime from '@/components/OrderCreateTiem'
 import OrderPage from '@/components/OrderPage'
 import OrderDialog from '@/components/OrderDialog'
+import { formatTime } from '@/utils/index'
 
 export default {
   components: {
@@ -114,6 +124,9 @@ export default {
         this.page = response.data
         this.listLoading = false
       })
+    },
+    getFormatTime(time) {
+      return formatTime(new Date(time))
     },
     handleSizeChange(pageSize) {
       console.log(`每页 ${pageSize} 条`)

@@ -80,12 +80,7 @@ export default {
   methods: {
     doGofood() {
       goFood(this.detail.orderId, this.detail.userId).then(res => {
-        if (res.code === 200) {
-          this.$message({
-            message: res.message,
-            type: 'success'
-          })
-        }
+        this.$message.success(res.message)
         this.$emit('doRefresh')
       })
     },

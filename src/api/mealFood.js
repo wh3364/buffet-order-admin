@@ -29,3 +29,27 @@ export function getAllDetails() {
     method: 'get'
   })
 }
+
+export function addDetail(data) {
+  return request({
+    url: '/Admin/AddDetail',
+    method: 'post',
+    data
+  })
+}
+
+export function updateDetail(data) {
+  return request({
+    url: '/Admin/UpdateDetail',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteDetail(data) {
+  return request({
+    url: '/Admin/DeleteDetail',
+    method: 'post',
+    data
+  })
+}

@@ -78,6 +78,7 @@
     <FoodDialog
       :dialog-visible="dialogVisible"
       :cates="cates"
+      :details="details"
       :foodd="food"
       :index="index"
       @close="closeDialog"
@@ -90,7 +91,8 @@
 <script>
 import {
   getAllFoods,
-  updateFood
+  updateFood,
+  getAllDetails
 } from '@/api/mealFood'
 import { getAllCates } from '@/api/mealCate'
 import FoodDialog from '@/components/FoodDialog'
@@ -103,6 +105,7 @@ export default {
       showUnenable: false,
       listLoading: true,
       cates: [],
+      details: [],
       cate: {
         cateId: 0
       },
@@ -127,6 +130,15 @@ export default {
           })
           this.listLoading = false
           this.changeShowFoods()
+        })
+      })
+      getAllDetails().then(res => {
+        this.details = res.data.map(item => {
+          return {
+            value: item.detailName,
+            detailPrice: item.detailPrice,
+            detailType: item.detailType
+          }
         })
       })
     },
@@ -156,13 +168,8 @@ export default {
         type: 'warning'
       }).then(() => {
         food.isEnable = 1
-        updateFood(food).then((res) => {
-          if (res.code === 200) {
-            this.$message({
-              message: '启用成功',
-              type: 'success'
-            })
-          }
+        updateFood(food).then(res => {
+          this.$message.success('启用成功')
           const index = this.foods.findIndex(item => {
             return item.foodId === food.foodId
           })
@@ -180,13 +187,8 @@ export default {
         type: 'error'
       }).then(() => {
         food.isEnable = 0
-        updateFood(food).then((res) => {
-          if (res.code === 200) {
-            this.$message({
-              message: '禁用成功',
-              type: 'success'
-            })
-          }
+        updateFood(food).then(res => {
+          this.$message.success('禁用成功')
           const index = this.foods.findIndex(item => {
             return item.foodId === food.foodId
           })

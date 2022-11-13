@@ -138,23 +138,13 @@ export default {
           }).then(() => {
             if (this.isAdd) {
               addCate(this.newCate).then((res) => {
-                if (res.code === 200) {
-                  this.$message({
-                    message: res.message,
-                    type: 'success'
-                  })
-                }
+                this.$message.success(res.message)
                 this.edited(res.data)
               })
             } else {
               updateCate(this.newCate).then((res) => {
-                if (res.code === 200) {
-                  this.$message({
-                    message: res.message,
-                    type: 'success'
-                  })
-                  this.edited(res.data)
-                }
+                this.$message.success(res.message)
+                this.edited(res.data)
               })
             }
           })

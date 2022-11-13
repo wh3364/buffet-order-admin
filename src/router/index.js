@@ -181,7 +181,7 @@ export const asyncRouterMap = [
     meta: {
       role: ['admin'],
       title: '员工管理',
-      icon: '菜单'
+      icon: 'el-icon-user-solid'
     },
     children: [] },
   { path: '*', redirect: '/404', hidden: true }

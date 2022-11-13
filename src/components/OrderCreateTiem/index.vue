@@ -88,13 +88,8 @@ export default {
     }
   },
   created() {
-    if (store.getters.orderTimes.length === 0) {
-      store.dispatch('orderTime/init').then((res) => {
-        this.createTime = res
-      })
-    } else {
-      this.createTime = store.getters.orderTimes
-    }
+    store.getters.orderTimes.length ? this.createTime = store.getters.orderTimes
+      : store.dispatch('orderTime/init').then((res) => { this.createTime = res })
   },
   methods: {
     changeTimes() {
