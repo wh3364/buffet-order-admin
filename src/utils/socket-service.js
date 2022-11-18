@@ -1,3 +1,5 @@
+import { Notification } from 'element-ui'
+
 export default class SocketService {
     static instance = null
     static get Instance() {
@@ -20,6 +22,9 @@ export default class SocketService {
       if (!window.WebSocket) {
         return console.log('您的浏览器不支持websocket!')
       }
+      if (this.connected) {
+        return console.log('已链接')
+      }
       this.ws = new WebSocket('ws://localhost:8080/BuffetOrder/WebSocket')
       // 连接服务端成功事件
       this.ws.onopen = () => {
@@ -28,26 +33,44 @@ export default class SocketService {
         this.reconnectCount = 0
       }
       // 连接服务端失败事件
-      this.ws.onclose = () => {
-        console.log('连接服务端失败')
+      this.ws.onerror = () => {
+        console.log('连接服务端错误')
         this.connected = false
         this.reconnectCount++
         setTimeout(() => {
           this.connect()
         }, this.reconnectCount * 500)
       }
+      // 连接服务端关闭事件
+      this.ws.onclose = () => {
+        this.connected = false
+        console.log('连接服务端失败')
+      }
       // 从服务端获取数据
       this.ws.onmessage = (msg) => {
         console.log('从服务端获取到的数据' + msg.data)
-        const recvData = JSON.parse(msg.data)
-        const socketType = recvData.socketType
-        if (this.callBackMapping[socketType]) {
-          const action = recvData.action
-          if (action === 'getData') {
-            const realData = JSON.parse(recvData.data)
-            this.callBackMapping[socketType].call(this, realData)
+        const data = JSON.parse(event.data)
+        Notification({
+          title: data.title,
+          message: data.message,
+          type: data.type,
+          duration: data.duration,
+          dangerouslyUseHTMLString: data.dangerouslyUseHTMLString,
+          onClick() {
+            // getOrder(data.orderId).then((res) => {
+            //   this.orderDetail = res.data
+            //   this.orderDetail.orderJsonBody = JSON.parse(
+            //     this.orderDetail.orderJsonBody
+            //   )
+            //   this.dialogVisible = true
+            //   console.log(this.dialogVisible)
+            // })
           }
-        }
+        })
+      }
+      // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常
+      this.ws.onbeforeunload = () => {
+        this.closeWebSocket
       }
     }
     // 回调函数的注册
@@ -68,5 +91,9 @@ export default class SocketService {
           this.ws.send(JSON.stringify(data))
         }, this.sendRetryCount * 500)
       }
+    }
+    closeWebSocket() {
+      console.log('关闭WebSocket')
+      this.ws.close()
     }
 }
