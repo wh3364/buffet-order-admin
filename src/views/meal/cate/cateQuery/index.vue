@@ -61,7 +61,7 @@ import {
   getAllCates,
   updateCate
 } from '@/api/mealCate'
-import CateUpdateDialog from '@/components/CateUpdateDialog'
+import CateUpdateDialog from './cateUpdateDialog.vue'
 export default {
   components: {
     CateUpdateDialog

@@ -95,7 +95,7 @@ import {
   getAllDetails
 } from '@/api/mealFood'
 import { getAllCates } from '@/api/mealCate'
-import FoodDialog from '@/components/FoodDialog'
+import FoodDialog from './foodDialog.vue'
 export default {
   components: {
     FoodDialog

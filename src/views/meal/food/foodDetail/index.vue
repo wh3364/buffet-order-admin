@@ -4,12 +4,7 @@
       <span class="detail-top-title">食物细节</span>
       <div class="detail-top-right">
         <el-select v-model="nowType" placeholder="请选择">
-          <el-option
-            v-for="item in detailsType"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+          <el-option v-for="item in detailsType" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </div>
     </div>
@@ -22,10 +17,7 @@
         </el-table-column>
         <el-table-column label="售价(￥)" width="200" align="center">
           <template slot-scope="scope">
-            <el-form-item
-              :prop="'data.' + scope.$index + '.detailPrice'"
-              :rules="priceRules"
-            >
+            <el-form-item :prop="'data.' + scope.$index + '.detailPrice'" :rules="priceRules">
               <el-input v-model="scope.row.detailPrice" placeholder="请输入内容" />
             </el-form-item>
           </template>
@@ -33,37 +25,20 @@
         <el-table-column label="分类" width="100" align="center">
           <template slot-scope="scope">
             <el-select v-model="scope.row.detailType" class="input-mmargin16" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <div v-if="scope.$index === 0" class="input-mmargin16">
-              <el-button
-                size="mini"
-                type="primary"
-                @click="addDetail(scope.$index, scope.row)"
-              >添加
+              <el-button size="mini" type="primary" @click="addDetail(scope.$index, scope.row)">添加
                 <i class="el-icon-plus el-icon--right" />
               </el-button>
             </div>
             <div v-else class="input-mmargin16">
-              <el-button
-                size="mini"
-                type="primary"
-                @click="editDetail(scope.$index, scope.row)"
-              >修改</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="deleteDetail(scope.$index, scope.row)"
-              >删除</el-button>
+              <el-button size="mini" type="primary" @click="editDetail(scope.$index, scope.row)">修改</el-button>
+              <el-button size="mini" type="danger" @click="deleteDetail(scope.$index, scope.row)">删除</el-button>
             </div>
           </template>
         </el-table-column>
@@ -169,11 +144,15 @@ export default {
       })
     },
     editDetail(index, detail) {
-      updateDetail(detail).then(res => {
-        this.$message.success('修改成功')
-        this.getData()
-      }).catch(() => {
-        this.getData()
+      this.$refs.detailPriceForm.validate(valid => {
+        if (valid) {
+          updateDetail(detail).then(res => {
+            this.$message.success('修改成功')
+            this.getData()
+          }).catch(() => {
+            this.getData()
+          })
+        }
       })
     },
     deleteDetail(index, detail) {
@@ -201,14 +180,17 @@ export default {
       margin-bottom: 20px;
     }
   }
-  .el-table .cell{
+
+  .el-table .cell {
     overflow: visible;
   }
-  .el-form-item{
+
+  .el-form-item {
     height: 56px;
     margin-bottom: 0;
   }
-  .input-mmargin16{
+
+  .input-mmargin16 {
     margin-bottom: 16px;
   }
 }
