@@ -313,6 +313,12 @@ export default {
         this.$emit('updateImged', {
           food: this.food
         })
+      } else {
+        this.$message.error(response.message)
+        this.food.foodImg = `${response.data.foodImg}?time=${new Date().getTime()}`
+        this.$emit('updateImged', {
+          food: this.food
+        })
       }
     },
     changeHaveDetail() {
