@@ -321,6 +321,8 @@ export default {
         if (valid) {
           if (this.food.haveDetail === 1) {
             this.food.foodDetail = JSON.stringify(this.food.foodDetail)
+          } else {
+            this.food.foodDetail = ''
           }
           addFood(this.food).then(res => {
             this.init()

@@ -11,7 +11,7 @@
       highlight-current-row
       @row-click="goOrderDetail"
     >
-      <el-table-column align="center" label="订单号" width="95">
+      <el-table-column align="center" label="订单号" width="200">
         <template slot-scope="scope">{{ scope.row.orderId }}</template>
       </el-table-column>
       <el-table-column label="用户id" width="110" align="center">
@@ -36,11 +36,11 @@
       >
         <template slot-scope="scope">
           <el-tag
-            v-if="scope.row.orderState === 3"
+            v-if="scope.row.orderState === 4"
             type="success"
           >已完成</el-tag>
           <el-tag
-            v-else-if="scope.row.orderState === 4"
+            v-else-if="scope.row.orderState === 5"
             type="danger"
           >已取消</el-tag>
         </template>
@@ -106,7 +106,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getOrderList(1, this.orderState, this.page.pageNum, this.createTime).then((response) => {
+      getOrderList(2, this.orderState, this.page.pageNum, this.createTime).then((response) => {
         this.page = response.data
         this.listLoading = false
       })

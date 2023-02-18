@@ -43,9 +43,9 @@
         "
       >取 消</el-button>
       <el-button
-        v-if="detail.orderState === 1"
+        v-if="detail.orderState === 2"
         type="primary"
-        :disabled="detail.orderState !== 1"
+        :disabled="detail.orderState !== 2"
         @click="
           doGofood();
         "

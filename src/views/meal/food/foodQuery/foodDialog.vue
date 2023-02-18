@@ -144,6 +144,7 @@
         点击图片更改
         <el-upload
           ref="uploadImg"
+          accept=".png, .jpg"
           class="avatar-uploader"
           :action="updateUrl"
           name="File"
@@ -293,15 +294,17 @@ export default {
   },
   methods: {
     beforeAvatarUpload(file) {
+      console.log(file)
       const isPng = file.type === 'image/png'
+      const isJpg = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isPng) {
-        this.$message.error('上传头像图片只能是 png 格式!')
+      if (!isPng && !isJpg) {
+        this.$message.error('上传图片只能是 png 或 jpg 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传图片大小不能超过 2MB!')
       }
-      return isPng && isLt2M
+      return (isPng || isJpg) && isLt2M
     },
     handleAvatarSuccess(response) {
       if (response.code === 200) {

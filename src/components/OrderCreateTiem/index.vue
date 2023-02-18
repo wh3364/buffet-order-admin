@@ -82,6 +82,15 @@ export default {
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
               picker.$emit('pick', [start, end])
             }
+          },
+          {
+            text: '近似全部',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 12 * 3)
+              picker.$emit('pick', [start, end])
+            }
           }
         ]
       }
@@ -109,11 +118,11 @@ export default {
         case '全部':
           return -1
         case '待付款':
-          return 0
-        case '已付款':
           return 1
-        case '发货中':
+        case '已付款':
           return 2
+        case '发货中':
+          return 3
         default:
           return -1
       }

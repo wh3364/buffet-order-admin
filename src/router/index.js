@@ -176,14 +176,36 @@ export const asyncRouterMap = [
     }]
   }, {
     path: '/staff',
-    name: 'Staff',
     component: Layout,
     meta: {
-      role: ['admin'],
-      title: '员工管理',
-      icon: 'el-icon-user-solid'
+      role: ['admin']
     },
-    children: [] },
+    children: [{
+      path: '/staff',
+      name: 'Staff',
+      component: () => import('@/views/staff/index'),
+      meta: {
+        title: '员工管理',
+        icon: 'el-icon-user-solid'
+      }
+    }]
+  },
+  {
+    path: '/user-info',
+    component: Layout,
+    meta: {
+      role: ['assistant']
+    },
+    children: [{
+      path: '/user-info',
+      name: 'UserInfo',
+      component: () => import('@/views/userInfo/index'),
+      meta: {
+        title: '个人信息',
+        icon: 'el-icon-user-solid'
+      }
+    }]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 

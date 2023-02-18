@@ -108,9 +108,9 @@ export default {
         case '全部':
           return -2
         case '已完成':
-          return 3
-        case '已取消':
           return 4
+        case '已取消':
+          return 5
         default:
           return -2
       }
