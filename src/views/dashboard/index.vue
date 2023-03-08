@@ -25,15 +25,26 @@
         </div>
       </el-col>
     </el-row>
+    <div class="block">
+      <el-date-picker
+        v-model="dates"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        value-format="timestamp"
+        @change="getData"
+      />
+    </div>
     <el-row :gutter="16">
-      <el-col :span="8">
+      <el-col :span="12">
         <div id="echart1" />
       </el-col>
-      <el-col :span="8">
+      <el-col :span="12">
         <div id="echart2" />
-      </el-col>
-      <el-col :span="8">
-        <div id="echart3" />
       </el-col>
     </el-row>
   </div>
@@ -44,11 +55,46 @@ import {
   mapGetters
 } from 'vuex'
 import * as echarts from 'echarts'
+import { getData } from '@/api/dashboard'
 export default {
   name: 'Dashboard',
   data() {
     return {
-
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      dates: '',
+      revenue: {
+        xData: [],
+        seriesData: []
+      },
+      hotFood: [],
+      myChart1: null,
+      myChart2: null
     }
   },
   computed: {
@@ -56,48 +102,55 @@ export default {
       'name'
     ])
   },
+  created() {
+    const now = new Date()
+    this.dates = [new Date(now.getTime() - 1000 * 60 * 60 * 24 * 60).getTime(), now.getTime()]
+  },
   mounted() {
-    this.initEcharts()
+    this.getData()
   },
   methods: {
+    getData() {
+      if (this.myChart1 !== null) {
+        this.myChart1.dispose
+      }
+      if (this.myChart2 !== null) {
+        this.myChart2.dispose
+      }
+      getData(this.dates[0], this.dates[1]).then(res => {
+        this.revenue.xData = res.data.revenue.map(item => item.data)
+        this.revenue.seriesData = res.data.revenue.map(item => item.revenue)
+        this.hotFood = res.data.hotFood.map(item => {
+          return {
+            value: item.num,
+            name: item.name
+          }
+        }).sort((f1, f2) => f1.value - f2.value)
+        this.initEcharts()
+      })
+    },
     initEcharts() {
-      const myChart1 = echarts.init(document.getElementById('echart1'))
-      const myChart2 = echarts.init(document.getElementById('echart2'))
-      const myChart3 = echarts.init(document.getElementById('echart3'))
+      this.myChart1 = echarts.init(document.getElementById('echart1'))
+      this.myChart2 = echarts.init(document.getElementById('echart2'))
       const option1 = {
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: this.revenue.xData
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          name: '收入'
         },
         series: [
           {
-            data: [120, 200, 150, 80, 70, 110, 130],
-            type: 'bar'
-          }
-        ]
-      }
-      const option2 = {
-        xAxis: {
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            data: [120, 200, 150, 80, 70, 110, 130],
+            data: this.revenue.seriesData,
             type: 'line'
           }
         ]
       }
-      const option3 = {
+      const option2 = {
         title: {
-          text: 'Referer of a Website',
-          subtext: 'Fake Data',
+          text: '热门餐品',
           left: 'center'
         },
         tooltip: {
@@ -112,13 +165,7 @@ export default {
             name: 'Access From',
             type: 'pie',
             radius: '50%',
-            data: [
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' },
-              { value: 1048, name: 'Search Engine' }
-            ],
+            data: this.hotFood,
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -129,9 +176,8 @@ export default {
           }
         ]
       }
-      myChart1.setOption(option1)
-      myChart2.setOption(option2)
-      myChart3.setOption(option3)
+      this.myChart1.setOption(option1)
+      this.myChart2.setOption(option2)
     }
   }
 }
@@ -178,16 +224,13 @@ export default {
 }
 
 #echart1 {
+  margin: 0 auto;
   height: 400px;
   width: auto;
 }
 
 #echart2 {
-  height: 400px;
-  width: auto;
-}
-
-#echart3 {
+  margin: 0 auto;
   height: 400px;
   width: auto;
 }

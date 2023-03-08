@@ -132,6 +132,7 @@ export default {
           this.$message.success('禁用成功')
           cate.isEnable = 0
           this.cates[index] = cate
+          this.getData()
         })
       })
     },

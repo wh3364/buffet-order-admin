@@ -6,3 +6,18 @@ export function queryAllAdminInfo() {
     method: 'get'
   })
 }
+
+export function resetAdminPassword(id) {
+  return request({
+    url: `/Admin/reset/${id}`,
+    method: 'post'
+  })
+}
+
+export function updateAdminPassword(data) {
+  return request({
+    url: `/Assistant/updatePassword`,
+    method: 'post',
+    data
+  })
+}

@@ -201,7 +201,7 @@ export const asyncRouterMap = [
       name: 'UserInfo',
       component: () => import('@/views/userInfo/index'),
       meta: {
-        title: '个人信息',
+        title: '修改密码',
         icon: 'el-icon-user-solid'
       }
     }]
