@@ -6,3 +6,10 @@ export function getData(startTime = new Date().getTime() - 1000 * 60 * 60 * 24 *
     method: 'get'
   })
 }
+
+export function getOrderData() {
+  return request({
+    url: `/Dashboard/order`,
+    method: 'get'
+  })
+}

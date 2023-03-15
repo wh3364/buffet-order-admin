@@ -16,12 +16,12 @@
     <el-row type="flex" justify="space-between">
       <el-col :span="10">
         <div class="store-state-card">
-          <div class="store-state-text">当前待处理订单: 0</div>
+          <div class="store-state-text">当前待处理订单: {{ unfinishedCount }}</div>
         </div>
       </el-col>
       <el-col :span="10">
         <div class="store-state-card">
-          <div class="store-state-text">今天完成订单: 0</div>
+          <div class="store-state-text">今天完成订单: {{ finishedCount }}</div>
         </div>
       </el-col>
     </el-row>
@@ -55,7 +55,7 @@ import {
   mapGetters
 } from 'vuex'
 import * as echarts from 'echarts'
-import { getData } from '@/api/dashboard'
+import { getData, getOrderData } from '@/api/dashboard'
 export default {
   name: 'Dashboard',
   data() {
@@ -94,7 +94,9 @@ export default {
       },
       hotFood: [],
       myChart1: null,
-      myChart2: null
+      myChart2: null,
+      unfinishedCount: 0,
+      finishedCount: 0
     }
   },
   computed: {
@@ -127,6 +129,10 @@ export default {
           }
         }).sort((f1, f2) => f1.value - f2.value)
         this.initEcharts()
+      })
+      getOrderData().then(res => {
+        this.unfinishedCount = res.data.unfinishedCount
+        this.finishedCount = res.data.finishedCount
       })
     },
     initEcharts() {
