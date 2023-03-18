@@ -77,6 +77,7 @@ const actions = {
         resetRouter()
         commit('RESET_STATE')
         SocketService.instance.closeWebSocket()
+        location.reload()
         resolve()
       }).catch(error => {
         reject(error)

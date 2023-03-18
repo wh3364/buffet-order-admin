@@ -39,8 +39,9 @@ export default {
       }
       updateAdminPassword(this.form).then(res => {
         this.$message.success(res.message)
-        this.$store.dispatch('user/resetToken')
-        this.$router.push({ path: '/login' })
+        this.$store.dispatch('user/logout').then(() => {
+          this.$router.push({ path: '/login' })
+        })
       })
     }
   }

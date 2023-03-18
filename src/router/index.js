@@ -174,7 +174,44 @@ export const asyncRouterMap = [
         }
       }]
     }]
-  }, {
+  },
+  {
+    path: '/coupon',
+    name: 'Coupon',
+    component: Layout,
+    alwaysShow: true,
+    meta: {
+      role: ['admin', 'assistant'],
+      title: '优惠卷管理',
+      icon: '菜单',
+      breadcrumb: false
+    },
+    children: [{
+      path: 'audit',
+      name: 'Audit',
+      component: () => import('@/views/coupon/audit/index'),
+      meta: {
+        role: ['admin'],
+        title: '审核优惠卷'
+      }
+    }, {
+      path: 'query',
+      name: 'Query',
+      component: () => import('@/views/coupon/query/index'),
+      meta: {
+        title: '查询优惠卷'
+      }
+    }, {
+      path: ':id',
+      name: 'QueryOne',
+      component: () => import('@/views/coupon/Coupon'),
+      hidden: true,
+      meta: {
+        title: '查询单个'
+      }
+    }]
+  },
+  {
     path: '/staff',
     component: Layout,
     meta: {
