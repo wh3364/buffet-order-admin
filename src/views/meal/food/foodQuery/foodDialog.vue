@@ -278,7 +278,7 @@ export default {
   watch: {
     foodd() {
       this.food = this.foodd
-      this.updateUrl = `http://localhost:8080/BuffetOrder/Admin/UpdateFoodImg?foodId=${this.food.foodId}`
+      this.updateUrl = `http://localhost:8080/Admin/UpdateFoodImg?foodId=${this.food.foodId}`
       this.food.haveDetail ? this.haveDetail = true : this.haveDetail = false
       if (this.food.foodDetail && this.food.haveDetail) {
         this.food.foodDetail = JSON.parse(this.food.foodDetail)

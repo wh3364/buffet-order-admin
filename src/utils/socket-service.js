@@ -25,7 +25,7 @@ export default class SocketService {
       if (this.connected) {
         return console.log('已链接')
       }
-      this.ws = new WebSocket('ws://localhost:8080/BuffetOrder/WebSocket')
+      this.ws = new WebSocket('ws://localhost:8080/WebSocket')
       // 连接服务端成功事件
       this.ws.onopen = () => {
         console.log('连接服务端成功')
